@@ -1,0 +1,21 @@
+import re
+def family(p):
+    s=(p or '').lower()
+    if 'tau' in s or 'microtubule-associated' in s: return 'Tau'
+    if 'synuclein' in s: return 'a-syn'
+    if 'amyloid-beta' in s or 'amyloid beta' in s or 'beta-amyloid' in s or 'p3(40)' in s or 'a4 protein' in s: return 'Abeta'
+    if 'islet amyloid' in s or 'iapp' in s: return 'IAPP'
+    if 'serum amyloid a' in s or s.startswith('amyloid protein a'): return 'SAA'
+    if 'transthyretin' in s: return 'TTR'
+    if 'prion' in s: return 'Prion'
+    if 'microglobulin' in s: return 'b2m'
+    if 'tar dna-binding' in s or 'tdp-43' in s: return 'TDP43'
+    if 'transmembrane protein 106' in s or 'tmem106' in s: return 'TMEM106B'
+    if 'immunoglob' in s or 'light chain' in s or ' iglc' in s or s.startswith('ig '): return 'IgLC'
+    if 'superoxide dismutase' in s: return 'SOD1'
+    if 'heterogeneous nuclear' in s or 'hnrnp' in s: return 'hnRNP'
+    if 'tata-binding' in s: return 'TBP'
+    if 'apolipoprotein' in s: return 'ApoA'
+    if 'lysozyme' in s: return 'Lysozyme'
+    if 'receptor-interacting' in s or 'ripk' in s: return 'RIPK'
+    return 'other'

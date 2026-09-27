@@ -12,23 +12,28 @@ milliseconds. No licence, no dependencies beyond numpy.
 
 VALIDATION
     Leave-one-protein-family-out cross-validation over 62 fibril structures
-    spanning 18 amyloid proteins, against FoldX per-residue dG from Amyloid
-    Explorer. To predict any family, the model was fit on the other 17 and
-    that family was hidden.
+    spanning 27 amyloid proteins grouped into 18 families, against FoldX
+    per-residue dG from Amyloid Explorer. To predict any family, the model was
+    fit on the other 17 and that family was hidden.
 
         amyfold 0.2                     : 0.760   95% CI [0.739, 0.780]
         amyfold 0.1 (linear, 12 feat)   : 0.722
-        unfitted 3-term baseline        : 0.601
-        hydropathy lookup, no structure : 0.402
-        burial alone                    : 0.130
+        hydropathy lookup, no structure : 0.452
+        burial alone                    : 0.202
 
     Positive on 62 of 62 structures, range 0.516 to 0.923.
 
-    v0.1 was additionally tested on 11 structures from 10 protein families
-    absent from its training set entirely (lysozyme, RIPK, beta-lactoglobulin,
-    LECT2, TCERG1, Sup35, PI3K, alphaA-crystallin, ApoA-II, plant amylase
-    inhibitor) and scored 0.724, against 0.722 cross-validated. No degradation
-    outside the training distribution.
+    The unfitted three-term baseline scores 0.621 on the same 62 structures
+    and 18 families, so every figure above is directly comparable.
+
+    STRICT HOLDOUT. Leave-one-family-out still allows a related protein into
+    training. Fitting only on the 52 structures from the 17 named amyloid
+    families and testing on the 10 structures whose proteins have no
+    family-mate anywhere in the set (beta-lactoglobulin, PI3K, CHCHD, insulin
+    B chain, LECT2, alphaA-crystallin, CPEB, eRF3, plant amylase/trypsin
+    inhibitor, TCERG1) gives 0.770, 95% CI [0.721, 0.818], against 0.748
+    cross-validated on trained families. No degradation outside the training
+    distribution.
 
 WHAT THIS IS NOT
     Not a FoldX replacement. FoldX computes a physically decomposed energy;
@@ -139,8 +144,11 @@ def _unit(v):
 
 # ----------------------------------------------------------------- features
 def compute_features(res):
-    """Twelve per-position features. Contacts use CB only, so nothing here
-    depends on native side-chain coordinates."""
+    """Thirteen per-position features. Contacts use CB only, so the geometry
+    does not depend on native side-chain coordinates. The features do use
+    residue identity (volume, hydropathy, proline, glycine), which is a
+    legitimate input for stability prediction, where the sequence is given, but
+    would not be for sequence design, where it is the answer."""
     keys = sorted(res)
     if not keys:
         raise ValueError('no standard residues parsed')
